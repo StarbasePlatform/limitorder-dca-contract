@@ -1,0 +1,83 @@
+[
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint160",
+            "name": "cycleSecondsApart",
+            "type": "uint160"
+          },
+          {
+            "internalType": "uint160",
+            "name": "numberOfTrade",
+            "type": "uint160"
+          },
+          {
+            "internalType": "address",
+            "name": "inputToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "outputToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "maker",
+            "type": "address"
+          },
+          {
+            "internalType": "uint160",
+            "name": "inAmount",
+            "type": "uint160"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minOutAmountPerCycle",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxOutAmountPerCycle",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expiration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "salt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IStarBaseDCA.Order",
+        "name": "order",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "takerInteraction",
+        "type": "bytes"
+      }
+    ],
+    "name": "fillDCA",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "curTakerFillAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

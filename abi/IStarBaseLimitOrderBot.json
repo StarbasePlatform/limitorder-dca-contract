@@ -1,0 +1,25 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "callExternalData",
+        "type": "bytes"
+      },
+      {
+        "internalType": "address",
+        "name": "takerToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minTakerTokenAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "fillStarBaseLimitOrder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

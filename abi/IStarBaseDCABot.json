@@ -1,0 +1,25 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "callExternalData",
+        "type": "bytes"
+      },
+      {
+        "internalType": "address",
+        "name": "outputToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minOutputTokenAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "fillStarBaseDCA",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

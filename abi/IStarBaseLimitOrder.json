@@ -1,0 +1,172 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "maker",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "taker",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "orderHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint160",
+        "name": "curTakerFillAmount",
+        "type": "uint160"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint160",
+        "name": "curMakerFillAmount",
+        "type": "uint160"
+      }
+    ],
+    "name": "LimitOrderFilled",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "contractAddr",
+        "type": "address"
+      }
+    ],
+    "name": "addWhiteList",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint160",
+        "name": "feeRate",
+        "type": "uint160"
+      }
+    ],
+    "name": "changeFeeRate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newFeeReceiver",
+        "type": "address"
+      }
+    ],
+    "name": "changeFeeReceiver",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "makerToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "takerToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint160",
+            "name": "makerAmount",
+            "type": "uint160"
+          },
+          {
+            "internalType": "uint160",
+            "name": "takerAmount",
+            "type": "uint160"
+          },
+          {
+            "internalType": "address",
+            "name": "maker",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expiration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "salt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IStarBaseLimitOrder.Order",
+        "name": "order",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint160",
+        "name": "takerFillAmount",
+        "type": "uint160"
+      },
+      {
+        "internalType": "uint160",
+        "name": "thresholdTakerAmount",
+        "type": "uint160"
+      },
+      {
+        "internalType": "bytes",
+        "name": "takerInteraction",
+        "type": "bytes"
+      }
+    ],
+    "name": "fillLimitOrder",
+    "outputs": [
+      {
+        "internalType": "uint160",
+        "name": "curTakerFillAmount",
+        "type": "uint160"
+      },
+      {
+        "internalType": "uint160",
+        "name": "curMakerFillAmount",
+        "type": "uint160"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "contractAddr",
+        "type": "address"
+      }
+    ],
+    "name": "removeWhiteList",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
