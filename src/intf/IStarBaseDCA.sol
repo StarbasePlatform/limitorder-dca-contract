@@ -21,4 +21,6 @@ interface IStarBaseDCA {
         bytes memory signature,
         bytes memory takerInteraction
     ) external returns (uint256 curTakerFillAmount);
+
+    function cancelOrder(Order memory order, bytes memory signature) external;
 }

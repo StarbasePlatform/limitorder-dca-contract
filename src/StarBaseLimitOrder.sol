@@ -58,18 +58,14 @@ contract StarBaseLimitOrder is
     ) {
         Common._validateAddress(owner);
         Common._validateAddress(feeReceiver);
-        require(feeRate <= 3000 && feeRate > 0, "SLO: FEE_RATE_TOO_HIGH");
+        Common._validateAddress(StarBaseLimitOrderBot);
+        require(feeRate <= 1000 && feeRate > 0, "SLO: FEE_RATE_TOO_HIGH");
 
         require(
             _checkIfContractSupportsInterface(StarBaseApproveProxy, type(IStarBaseApproveProxy).interfaceId),
             "SLO: ADDRESS_DOES_NOT_IMPLEMENT_REQUIRED_METHODS"
         );
         _StarBase_APPROVE_PROXY_ = StarBaseApproveProxy;
-
-        require(
-            _checkIfContractSupportsInterface(StarBaseLimitOrderBot, type(IStarBaseLimitOrderBot).interfaceId),
-            "SLO: ADDRESS_DOES_NOT_IMPLEMENT_REQUIRED_METHODS"
-        );
 
         isWhiteListed[StarBaseLimitOrderBot] = true;
 
@@ -159,7 +155,12 @@ contract StarBaseLimitOrder is
         emit LimitOrderFilled(order.maker, msg.sender, orderHash, curTakerFillAmount, curMakerFillAmount);
     }
 
-    function cancelOrder(Order memory order, bytes memory signature) public {
+    /**
+     * @dev Cancels an existing limit order.
+     * @param order The limit order to be canceled, containing all necessary details.
+     * @param signature The signature to verify the authenticity of the cancellation request.
+     */
+    function cancelOrder(Order memory order, bytes memory signature) external {
         bytes32 orderHash = _orderHash(order);
 
         require(order.maker == msg.sender, "SLO: PRIVATE_ORDER");
@@ -176,17 +177,36 @@ contract StarBaseLimitOrder is
         emit OrderCancelled(orderHash);
     }
 
+    /**
+     * @dev Transfers the specified `curTakerFillAmount` of the taker token to the maker.
+     * @param order The order details, including the maker and taker token information.
+     * @param from The address where tokens will be transferred from.
+     * @param curTakerFillAmount The amount of taker tokens to transfer to the maker.
+     */
     function sendMaker(Order calldata order, address from, uint160 curTakerFillAmount) internal {
         Common._validateAddress(from);
         IERC20(order.takerToken).safeTransferFrom(from, order.maker, curTakerFillAmount);
     }
 
+    /**
+     * @dev Sends the fee to the designated fee recipient.
+     * @param order The order containing the trade.
+     * @param from The address from which the fee is transferred.
+     * @param to The address receiving the fee.
+     * @param fee The fee amount to be transferred.
+     */
     function sendFee(Order calldata order, address from, address to, uint160 fee) internal {
         Common._validateAddress(from);
         Common._validateAddress(to);
         IERC20(order.takerToken).safeTransferFrom(from, to, fee);
     }
 
+    /**
+     * @dev Checks if a given contract supports a specific interface ID using ERC165.
+     * @param _contract The address of the contract to check.
+     * @param interfaceId The ID of the interface to verify support for.
+     * @return Returns `true` if the contract supports the given interface ID, otherwise `false`.
+     */
     function _checkIfContractSupportsInterface(address _contract, bytes4 interfaceId) internal view returns (bool) {
         (bool success, bytes memory result) = _contract.staticcall(
             abi.encodeWithSelector(ERC165.supportsInterface.selector, interfaceId)
@@ -218,7 +238,9 @@ contract StarBaseLimitOrder is
     }
 
     function removeWhiteList(address contractAddr) external onlyOwner {
-        Common._validateAddress(contractAddr);
+        // Ensure the address is in the whitelist before removing
+        require(isWhiteListed[contractAddr], "SLO: ADDRESS NOT IN WHITELIST");
+
         isWhiteListed[contractAddr] = false;
         emit RemoveWhiteList(contractAddr);
     }
@@ -230,7 +252,7 @@ contract StarBaseLimitOrder is
     }
 
     function changeFeeRate(uint160 feeRate) external onlyOwner {
-        require(feeRate <= 3000, "SLO: FEE_RATE_TOO_HIGH");
+        require(feeRate <= 1000, "SLO: FEE_RATE_TOO_HIGH");
         _FEE_RATE_ = feeRate;
         emit ChangeFeeRate(feeRate);
     }
@@ -242,7 +264,7 @@ contract StarBaseLimitOrder is
     }
 
     // ============ Internal Functions ============
-    function _orderHash(Order memory order) private view returns (bytes32) {
+    function _orderHash(Order memory order) public view returns (bytes32) {
         return
             _hashTypedDataV4(
                 keccak256(

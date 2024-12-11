@@ -1,5 +1,16 @@
 [
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_bot",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -40,13 +51,26 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "contractAddr",
+        "name": "",
         "type": "address"
       }
     ],
     "name": "addWhiteList",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "bot",
+    "outputs": [
+      {
+        "internalType": "contract IStarBaseLimitOrderBot",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -186,7 +210,7 @@
       },
       {
         "internalType": "uint160",
-        "name": "thresholdTakerAmount",
+        "name": "thresholdAmount",
         "type": "uint160"
       },
       {
@@ -214,14 +238,83 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "curTakerFillAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "curMakerFillAmount",
+        "type": "uint256"
+      },
+      {
         "internalType": "address",
-        "name": "contractAddr",
+        "name": "makerToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "takerToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "StarBaseRouteProxy",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "callSwapAddr",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "datas",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct IStarBaseLimitOrderBot.SwapData",
+        "name": "datas",
+        "type": "tuple"
+      }
+    ],
+    "name": "mockCallDoLimitOrderSwap",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
         "type": "address"
       }
     ],
     "name": "removeWhiteList",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

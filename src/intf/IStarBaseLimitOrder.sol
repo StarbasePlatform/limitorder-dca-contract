@@ -28,6 +28,8 @@ interface IStarBaseLimitOrder {
         bytes memory takerInteraction
     ) external returns (uint160 curTakerFillAmount, uint160 curMakerFillAmount);
 
+    function cancelOrder(Order memory order, bytes memory signature) external;
+
     function addWhiteList(address contractAddr) external;
 
     function removeWhiteList(address contractAddr) external;

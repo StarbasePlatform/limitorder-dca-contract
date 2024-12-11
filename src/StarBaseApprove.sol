@@ -41,7 +41,7 @@ contract StarBaseApprove is InitializableOwnable {
      * @dev Modifier that ensures a proxy change is not locked by the timelock.
      */
     modifier notLocked() {
-        require(_TIMELOCK_ <= block.timestamp, "SA: Proxy set is timelocked");
+        require(_TIMELOCK_ <= block.timestamp, "SA: PROXY SET IS TIMELOCKED");
         _;
     }
 
@@ -111,7 +111,7 @@ contract StarBaseApprove is InitializableOwnable {
         Common._validateAddress(who);
         Common._validateAddress(dest);
 
-        require(msg.sender == _StarBase_PROXY_, "SA: Access restricted to approved proxy");
+        require(msg.sender == _StarBase_PROXY_, "SA: ACCESS RESTRICTED TO APPROVED PROXY");
 
         if (amount > 0) {
             IERC20(token).safeTransferFrom(who, dest, amount);

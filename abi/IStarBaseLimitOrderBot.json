@@ -2,6 +2,56 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "curTakerFillAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "curMakerFillAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "makerToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "takerToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "StarBaseRouteProxy",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "callSwapAddr",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "datas",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct IStarBaseLimitOrderBot.SwapData",
+        "name": "datas",
+        "type": "tuple"
+      }
+    ],
+    "name": "doLimitOrderSwap",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "bytes",
         "name": "callExternalData",
         "type": "bytes"

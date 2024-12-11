@@ -17,6 +17,7 @@ import { ArgumentsDecoder } from "./lib/ArgumentsDecoder.sol";
 import { IStarBaseDCA } from "./intf/IStarBaseDCA.sol";
 import { Common } from "./lib/Common.sol";
 import { IERC165 } from "./intf/IERC165.sol";
+import { IStarBaseDCABot } from "./intf/IStarBaseDCABot.sol";
 
 /**
  * @title StarBaseDCA
@@ -78,7 +79,7 @@ contract StarBaseDCA is IStarBaseDCA, EIP712("StarBase DCA Protocol", "1"), Init
         uint160 feeRate,
         address StarBaseDCABot
     ) {
-        require(feeRate <= 3000, "SDCA: FEE_RATE_TOO_HIGH"); // Fee rate cannot exceed 30%
+        require(feeRate <= 1000, "SDCA: FEE_RATE_TOO_HIGH"); // Fee rate cannot exceed 10%
         Common._validateAddress(owner);
         Common._validateAddress(feeReceiver);
         Common._validateAddress(StarBaseDCABot);
@@ -115,7 +116,6 @@ contract StarBaseDCA is IStarBaseDCA, EIP712("StarBase DCA Protocol", "1"), Init
         bytes memory takerInteraction
     ) external nonReentrant returns (uint256 curTakerFillAmount) {
         require(order.maxOutAmountPerCycle >= order.minOutAmountPerCycle, "SDCA: MAX_OUT_MUST_BE_GREATER_THAN_MIN_OUT");
-
         bytes32 orderHash = _orderHash(order);
         DCAStates storage DCAFilledTimes = _DCA_FILLEDTIMES_[orderHash];
 
@@ -177,7 +177,12 @@ contract StarBaseDCA is IStarBaseDCA, EIP712("StarBase DCA Protocol", "1"), Init
         emit DCAFilled(order.maker, msg.sender, orderHash, curTakerFillAmount, order.inAmount);
     }
 
-    function cancelOrder(Order memory order, bytes memory signature) public {
+    /**
+     * @dev Cancels an existing DCA order.
+     * @param order The order to be canceled, containing all necessary details.
+     * @param signature The signature to verify the authenticity of the cancellation request.
+     */
+    function cancelOrder(Order memory order, bytes memory signature) external {
         bytes32 orderHash = _orderHash(order);
 
         require(order.maker == msg.sender, "SDCA: PRIVATE_ORDER");
@@ -193,17 +198,36 @@ contract StarBaseDCA is IStarBaseDCA, EIP712("StarBase DCA Protocol", "1"), Init
         emit OrderCancelled(orderHash);
     }
 
+    /**
+     * @dev Sends the output tokens to the maker after a successful trade.
+     * @param order The order containing the details of the trade.
+     * @param from The address where tokens are transferred from.
+     * @param curTakerFillAmount The amount of tokens to transfer to the maker.
+     */
     function sendMaker(Order memory order, address from, uint256 curTakerFillAmount) internal {
         Common._validateAddress(from);
         IERC20(order.outputToken).safeTransferFrom(from, order.maker, curTakerFillAmount);
     }
 
+    /**
+     * @dev Sends the fee to the designated fee recipient.
+     * @param order The order containing the trade.
+     * @param from The address where the fee is transferred from.
+     * @param to The address receiving the fee.
+     * @param fee The fee amount to be transferred.
+     */
     function sendFee(Order memory order, address from, address to, uint256 fee) internal {
         Common._validateAddress(from);
         Common._validateAddress(to);
         IERC20(order.outputToken).safeTransferFrom(from, to, fee);
     }
 
+    /**
+     * @dev Checks if a given contract supports a specific interface ID using ERC165.
+     * @param _contract The address of the contract to check.
+     * @param interfaceId The ID of the interface to verify support for.
+     * @return Returns `true` if the contract supports the given interface ID, otherwise `false`.
+     */
     function _checkIfContractSupportsInterface(address _contract, bytes4 interfaceId) internal view returns (bool) {
         (bool success, bytes memory result) = _contract.staticcall(
             abi.encodeWithSelector(IERC165.supportsInterface.selector, interfaceId)
@@ -242,8 +266,9 @@ contract StarBaseDCA is IStarBaseDCA, EIP712("StarBase DCA Protocol", "1"), Init
      */
     function addWhiteList(address contractAddr) external onlyOwner {
         Common._validateAddress(contractAddr);
+
         // Ensure the address is not already whitelisted
-        require(!isWhiteListed[contractAddr], "SDCA:Address already whitelisted");
+        require(!isWhiteListed[contractAddr], "SDCA: ADDRESS ALREADY WHITELISTED");
 
         // Add the address to the whitelist
         isWhiteListed[contractAddr] = true;
@@ -258,7 +283,7 @@ contract StarBaseDCA is IStarBaseDCA, EIP712("StarBase DCA Protocol", "1"), Init
      */
     function removeWhiteList(address contractAddr) external onlyOwner {
         // Ensure the address is in the whitelist before removing
-        require(isWhiteListed[contractAddr], "SDCA:Address not in whitelist");
+        require(isWhiteListed[contractAddr], "SDCA: ADDRESS NOT IN WHITELIST");
 
         // Remove the address from the whitelist
         isWhiteListed[contractAddr] = false;
@@ -282,7 +307,7 @@ contract StarBaseDCA is IStarBaseDCA, EIP712("StarBase DCA Protocol", "1"), Init
      * @param feeRate The new fee rate (multiplied by 10000).
      */
     function changeFeeRate(uint160 feeRate) external onlyOwner {
-        require(feeRate <= 3000, "SDCA: FEE_RATE_TOO_HIGH");
+        require(feeRate <= 1000, "SDCA: FEE_RATE_TOO_HIGH");
         _FEE_RATE_ = feeRate;
         emit ChangeFeeRate(feeRate);
     }
@@ -304,7 +329,7 @@ contract StarBaseDCA is IStarBaseDCA, EIP712("StarBase DCA Protocol", "1"), Init
      * @param order The order to hash.
      * @return The hash of the order.
      */
-    function _orderHash(Order memory order) private view returns (bytes32) {
+    function _orderHash(Order memory order) public view returns (bytes32) {
         return
             _hashTypedDataV4(
                 keccak256(

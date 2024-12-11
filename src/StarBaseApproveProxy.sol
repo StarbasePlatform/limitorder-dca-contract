@@ -44,7 +44,7 @@ contract StarBaseApproveProxy is InitializableOwnable, IStarBaseApproveProxy, ER
      * @dev Modifier to ensure that the contract is not in timelock state.
      */
     modifier notLocked() {
-        require(_TIMELOCK_ <= block.timestamp, "SAP: SetProxy is timelocked");
+        require(_TIMELOCK_ <= block.timestamp, "SAP: SETPROXY IS TIMELOCKED");
         _;
     }
 
@@ -88,11 +88,11 @@ contract StarBaseApproveProxy is InitializableOwnable, IStarBaseApproveProxy, ER
     }
 
     function setStarBaseApprove(address StarBaseApprove) external onlyOwner {
-        require(_isStarBaseApproveSet_ == false, "SAP: It's already initialized");
+        require(_isStarBaseApproveSet_ == false, "SAP: IT HAS ALREADY BEEN INITIALIZED");
 
         require(
             _checkIfContractSupportsInterface(StarBaseApprove, type(IStarBaseApprove).interfaceId),
-            "SAP: Address does not implement required methods"
+            "SAP: ADDRESS DOES NOT IMPLEMENT REQUIRED METHODS"
         );
 
         _StarBase_APPROVE_ = StarBaseApprove;
@@ -102,7 +102,7 @@ contract StarBaseApproveProxy is InitializableOwnable, IStarBaseApproveProxy, ER
 
     function setWhiteList(address[] memory proxies) external onlyOwner {
         // Add each proxy to the allowed list
-        require(_isSetWhiteList_ == false, "SAP: It's already initialized");
+        require(_isSetWhiteList_ == false, "SAP: IT HAS ALREADY BEEN INITIALIZED");
         for (uint256 i = 0; i < proxies.length; i++) {
             Common._validateAddress(proxies[i]);
             _IS_ALLOWED_PROXY_[proxies[i]] = true;
@@ -117,7 +117,7 @@ contract StarBaseApproveProxy is InitializableOwnable, IStarBaseApproveProxy, ER
      */
     function removeStarBaseProxy(address oldStarBaseProxy) external onlyOwner {
         Common._validateAddress(oldStarBaseProxy);
-        require(_IS_ALLOWED_PROXY_[oldStarBaseProxy], "SAP: Address is not an allowed proxy");
+        require(_IS_ALLOWED_PROXY_[oldStarBaseProxy], "SAP: ADDRESS IS NOT AN ALLOWED PROXY");
         _IS_ALLOWED_PROXY_[oldStarBaseProxy] = false;
         emit RemoveStarBaseProxy(oldStarBaseProxy);
     }
@@ -134,7 +134,7 @@ contract StarBaseApproveProxy is InitializableOwnable, IStarBaseApproveProxy, ER
         Common._validateAddress(who);
         Common._validateAddress(dest);
 
-        require(_IS_ALLOWED_PROXY_[msg.sender], "SAP: Access restricted to allowed proxies");
+        require(_IS_ALLOWED_PROXY_[msg.sender], "SAP: ACCESS RESTRICTED TO ALLOWED PROXIES");
         IStarBaseApprove(_StarBase_APPROVE_).claimTokens(token, who, dest, amount);
         emit ClaimTokens(token, who, dest, amount);
     }
